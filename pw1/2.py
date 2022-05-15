@@ -1,6 +1,6 @@
 def byte(a):
-    c = eval('"b"+a')
-    print(f'{type(c)}, {c}, {len(c)}')
+    c = eval("str.encode(a, encoding='utf-8')")
+    print(f' {c} {type(c)}')
 
 
 byte('class')
