@@ -10,7 +10,7 @@ orders = {'orders': (
 
 
 def write_order_to_json(o):
-    with open('orders.json', 'w') as f_n:
+    with open('orders.json', 'w', encoding='utf-8') as f_n:
         json.dump(o, f_n, indent=4, skipkeys=True)
 
 

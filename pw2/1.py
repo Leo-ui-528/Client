@@ -1,58 +1,49 @@
+import chardet
 import csv
-from chardet import detect
 import re
 
 
-# def write_to_csv():
-#     with open('write.csv', 'w') as f_n:
-#         f_n_writer = csv.writer(f_n)
-#     for row in info:
-#         f_n_writer.writerow(row)
+def get_data():
+    list_1 = []
+    list_2 = []
+    list_3 = []
+    list_4 = []
+    main_data = []
+    for i in range(1, 4):
+        with open(f"info_{i}.txt", 'rb') as file_obj:
+            data_bytes = file_obj.read()
+            result = chardet.detect(data_bytes)
+            data = data_bytes.decode(result['encoding'])
+
+        os_prod_reg = re.compile(r'Изготовитель системы:\s*\S*')
+        list_1.append(os_prod_reg.findall(data)[0].split()[2])
+
+        os_name_reg = re.compile(r'Windows:\s*\S*')
+        list_2.append(os_name_reg.findall(data)[0])
+
+        os_code_reg = re.compile(r'Код продукта:\s*\S*')
+        list_3.append(os_code_reg.findall(data)[0].split()[2])
+
+        os_type_reg = re.compile(r'Тип системы:\s*\S*')
+        list_4.append(os_type_reg.findall(data)[0].split()[2])
+
+    headers = ['Изготовитель системы', 'Название ОС', 'Код продукта', 'Тип ситемы']
+    main_data.append(headers)
+
+    data_for_rows = [list_1, list_2, list_3, list_4]
+
+    for idx in range(len(data_for_rows[0])):
+        line = [row[idx] for row in data_for_rows]
+        main_data.append(line)
+    return main_data
 
 
-info = 'info_1.txt', 'info_2.txt', 'info_3.txt'
+def write_to_csv(out_file):
+    main_data = get_data()
+    with open(out_file, 'w', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        for row in main_data:
+            writer.writerow(row)
 
 
-def get_data(i):
-    for i in info:
-        with open(i, 'rb') as f:
-            content = f.read()
-        encoding = detect(content)['encoding']
-        # print('encoding: ', encoding)
-
-        with open(i, encoding=encoding) as f_n:
-            for el_str in f_n:
-                print(el_str, end='')
-
-
-list_1 = []
-list_2 = []
-list_3 = []
-list_4 = []
-
-main_data = [['Изготовитель системы', 'Название ОС', 'Код продукта', 'Тип системы']]
-
-for file in info:
-    datafile = open(file)
-    for row in datafile:
-        row = row.rstrip()
-        if re.match('Изготовитель системы', row):
-            list_1.append(re.search(r'(Изготовитель системы).\s*(.*)', row).group(2))
-        elif re.match('Название ОС', row):
-            list_2.append(re.search(r'(Название ОС).\s*(.*)', row).group(2))
-        elif re.match('Код продукта', row):
-            list_3.append(re.search(r'(Код продукта).\s*(.*)', row).group(2))
-        elif re.match('Тип системы', row):
-            list_4.append(re.search(r'(Тип системы).\s*(.*)', row).group(2))
-
-# def write_to_csv():
-#     with open('write.csv', 'w') as f_n:
-#         f_n_writer = csv.writer(f_n)
-#     for row in info:
-#         f_n_writer.writerow(row)
-# print(get_data(info))
-
-print(list_1)
-print(list_2)
-print(list_3)
-print(list_4)
+write_to_csv('data_report.csv¶')
