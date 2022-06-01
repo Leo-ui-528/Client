@@ -1,6 +1,11 @@
-def byte(a):
-    c = eval('"b"+a')
-    print(f'{type(c)}, {c}, {len(c)}')
+STR_A = 'class'
+STR_B = 'function'
+STR_C = 'method'
 
-
-byte('class')
+STR_LIST = [STR_A, STR_B, STR_C]
+for el_str in STR_LIST:
+    el = eval(f"b'{el_str}'")
+    print('=' * 50)
+    print('type:', type(el))
+    print(el)
+    print('length:', len(el))
